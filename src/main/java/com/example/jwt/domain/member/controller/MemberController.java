@@ -1,5 +1,6 @@
 package com.example.jwt.domain.member.controller;
 
+import com.example.jwt.domain.member.entity.Member;
 import com.example.jwt.domain.member.service.MemberService;
 import com.example.jwt.global.reData.RsData;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,11 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.util.MimeTypeUtils.ALL_VALUE;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 
@@ -40,7 +39,7 @@ public class MemberController {
         private final String accessToken;
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = APPLICATION_JSON_VALUE)
     public RsData<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse resp) {
 
         // 테스트용
@@ -53,6 +52,22 @@ public class MemberController {
                 "S-1",
                 "엑세스 토큰이 생성 되었습니다.",
                 new LoginResponse(accessToken)
+        );
+    }
+    @Getter
+    @AllArgsConstructor
+    public static class MeResponse {
+        public final Member member;
+    }
+
+    @GetMapping(value = "/me", consumes = ALL_VALUE)
+    public RsData<MeResponse> me() {
+        Member member = memberService.findByUsername("user1").get();
+
+        return RsData.of(
+                "S-2",
+                "성공",
+                new MeResponse(member)
         );
     }
 }
