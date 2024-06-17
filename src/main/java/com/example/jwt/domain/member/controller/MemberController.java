@@ -59,11 +59,11 @@ public class MemberController {
     @Getter
     @AllArgsConstructor
     public static class MeResponse {
-        public final Member member;
+        private final Member member;
     }
 
     @GetMapping(value = "/me", consumes = ALL_VALUE)
-    public RsData<MeResponse> me(@AuthenticationPrincipal User user) {
+    public RsData<MeResponse> me (@AuthenticationPrincipal User user) {
         Member member = memberService.findByUsername(user.getUsername()).get();
 
         return RsData.of(
