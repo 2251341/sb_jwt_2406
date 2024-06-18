@@ -1,5 +1,6 @@
 package com.example.jwt.domain.article;
 
+import com.example.jwt.domain.article.controller.ArticleController;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -47,7 +47,7 @@ public class ArticleControllerTest {
 
 
     @Test
-    @DisplayName("GET /articles/1")
+    @DisplayName("GET /articles/11")
     void t2() throws Exception {
         // When
         ResultActions resultActions = mvc
@@ -116,5 +116,24 @@ public class ArticleControllerTest {
                 .andExpect(jsonPath("$.data.article.id").value(2))
                 .andExpect(jsonPath("$.data.article.subject").value("제목 2222 !!!"))
                 .andExpect(jsonPath("$.data.article.content").value("내용 2222 !!!"));
+    }
+
+    @Test
+    @DisplayName("DELETE /articles/2")
+    @WithUserDetails("admin")
+    void t5() throws Exception {
+        // When
+        ResultActions resultActions = mvc
+                .perform(delete("/api/v1/articles/2"))
+                .andDo(print());
+
+        // Then
+        resultActions
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(handler().handlerType(ArticleController.class))
+                .andExpect(handler().methodName("remove"))
+                .andExpect(jsonPath("$.resultCode").value("S-5"))
+                .andExpect(jsonPath("$.msg").exists());
+
     }
 }
