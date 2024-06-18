@@ -1,3 +1,4 @@
+
 package com.example.jwt.global.security;
 
 import com.example.jwt.global.security.filter.JwtAuthorizationFilter;
@@ -23,11 +24,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorizeHttpRequests -> authorizeHttpRequests
                                 .requestMatchers("/api/*/member/login").permitAll() // 로그인은 누구나 가능
+                                .requestMatchers("/api/*/articles").permitAll() // 글 보기는 누구나 가능
                                 .anyRequest().authenticated() // 나머지는 인증된 사용자만 가능
                 )
                 .cors(
                         cors -> cors.disable()
-                ) // 타 도메인에서 API 호출 가능
+                )// 타 도메인에서 API 호출 가능
                 .csrf(
                         csrf -> csrf.disable()
                 ) // CSRF 토큰 끄기
@@ -36,7 +38,7 @@ public class SecurityConfig {
                 ) // httpBaic 로그인 방식 끄기
                 .formLogin(
                         formLogin -> formLogin.disable()
-        )// 폼 로그인 방식 끄기
+                ) // 폼 로그인 방식 끄기
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(STATELESS)
                 ) // 세션끄기
